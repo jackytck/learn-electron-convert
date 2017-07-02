@@ -5,8 +5,13 @@ import { ADD_VIDEO, ADD_VIDEOS, REMOVE_VIDEO, REMOVE_ALL_VIDEOS, VIDEO_PROGRESS,
 // have been added and are pending conversion
 export const addVideos = videos => dispatch => {
   ipcRenderer.send('videos:added', videos)
+  ipcRenderer.on('metadata:complete', (event, videosWithData) => {
+    dispatch({
+      type: ADD_VIDEOS,
+      payload: videosWithData
+    })
+  })
 }
-
 
 // TODO: Communicate to MainWindow that the user wants
 // to start converting videos.  Also listen for feedback

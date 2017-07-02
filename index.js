@@ -26,13 +26,16 @@ ipcMain.on('videos:added', (event, videos) => {
         if (err) {
           return reject(err)
         }
-        resolve(metadata)
+        resolve(Object.assign({}, video, {
+          duration: metadata.format.duration,
+          format: 'avi'
+        }))
       })
     })
   })
 
   Promise.all(promises)
     .then(results => {
-      console.log(results)
+      mainWindow.webContents.send('metadata:complete', results)
     })
 })
