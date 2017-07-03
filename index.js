@@ -1,3 +1,4 @@
+const path = require('path')
 const electron = require('electron')
 const ffmpeg = require('fluent-ffmpeg')
 
@@ -38,4 +39,12 @@ ipcMain.on('videos:added', (event, videos) => {
     .then(results => {
       mainWindow.webContents.send('metadata:complete', results)
     })
+})
+
+ipcMain.on('conversion:start', (event, videos) => {
+  const keys = Object.keys(videos)
+  const video = videos[keys[0]]
+  const parts = path.parse(video.path)
+  const outputPath = `${parts.dir}/${parts.name}.${video.format}`
+  console.log(outputPath)
 })
