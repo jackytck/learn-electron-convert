@@ -1,3 +1,4 @@
+import { filter } from 'lodash'
 import { ipcRenderer } from 'electron'
 import { ADD_VIDEO, ADD_VIDEOS, REMOVE_VIDEO, REMOVE_ALL_VIDEOS, VIDEO_PROGRESS, VIDEO_COMPLETE } from './types'
 
@@ -19,7 +20,8 @@ export const addVideos = videos => dispatch => {
 // conversion.
 export const convertVideos = () => (dispatch, getState) => {
   const { videos } = getState()
-  ipcRenderer.send('conversion:start', videos)
+  const fresh = filter(videos, v => !v.complete)
+  ipcRenderer.send('conversion:start', fresh)
 
   ipcRenderer.on('conversion:progress', (event, { video, timemark }) => {
     dispatch({
